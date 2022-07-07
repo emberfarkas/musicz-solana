@@ -2,14 +2,16 @@
 
 #![cfg(not(feature = "no-entrypoint"))]
 
-use solana_program::{
-    account_info::AccountInfo,
-    entrypoint,
-    entrypoint::{ProgramResult, HEAP_LENGTH, HEAP_START_ADDRESS},
-    pubkey::Pubkey,
+use {
+    crate::processor::Processor,
+    solana_program::{
+        account_info::AccountInfo,
+        entrypoint,
+        entrypoint::{ProgramResult},
+        pubkey::Pubkey,
+        msg,
+    },
 };
-
-use std::{alloc::Layout, mem::size_of, ptr::null_mut};
 
 entrypoint!(process_instruction);
 fn process_instruction(
@@ -17,5 +19,10 @@ fn process_instruction(
     accounts: &[AccountInfo],
     instruction_data: &[u8],
 ) -> ProgramResult {
-    crate::processor::process_instruction(program_id, accounts, instruction_data)
+    msg!("Entrypoint");
+    if let Err(error) = Processor::process_instruction(program_id, accounts, instruction_data) {
+        // catch the error so we can print i
+        return Err(error);
+    }
+    Ok(())
 }
