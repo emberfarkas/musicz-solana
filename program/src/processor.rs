@@ -1,20 +1,23 @@
 //! Program instruction processor
 
-use solana_program::{
-    account_info::{next_account_info, AccountInfo},
-    entrypoint::ProgramResult,
-    msg,
-    pubkey::Pubkey,
-    sysvar::{clock::Clock, rent::Rent, Sysvar},
-};
+use borsh::BorshDeserialize;
 
+use {
+    crate::instruction::MusicZInstruction,
+    solana_program::{
+        account_info::{next_account_info, AccountInfo},
+        entrypoint::ProgramResult,
+        msg,
+        pubkey::Pubkey,
+        sysvar::{clock::Clock, rent::Rent, Sysvar},
+    },
+};
 
 /// Processor document
 pub struct Processor {}
 
 impl Processor {
-
-    /// set operator 
+    /// set operator
     pub fn process_set_operator(
         program_id: &Pubkey,
         accounts: &[AccountInfo],
@@ -31,16 +34,12 @@ impl Processor {
         hashed_name: Vec<u8>,
         lamports: u64,
         space: u32,
-    ) ->ProgramResult {
+    ) -> ProgramResult {
         Ok(())
     }
 
-    /// Instruction processor
-    pub fn process_instruction(
-        _program_id: &Pubkey,
-        accounts: &[AccountInfo],
-        _instruction_data: &[u8],
-    ) -> ProgramResult {
+    /// ceate
+    pub fn process_create(accounts: &[AccountInfo]) -> ProgramResult {
         // Create in iterator to safety reference accounts in the slice
         let account_info_iter = &mut accounts.iter();
 
@@ -67,9 +66,19 @@ impl Processor {
             rent_via_sysvar.lamports_per_byte_year,
             rent_via_sysvar.burn_percent
         );
-
         Ok(())
     }
 
-}
+    /// Instruction processor
+    pub fn process_instruction(
+        _program_id: &Pubkey,
+        accounts: &[AccountInfo],
+        _instruction_data: &[u8],
+    ) -> ProgramResult {
+        msg!("Beginning processing");
+        let instruction = MusicZInstruction::try_from_slice(_instruction_data)?;
+        msg!("Instruction unpacked");
 
+        Ok(())
+    }
+}

@@ -4,7 +4,9 @@
 #![forbid(unsafe_code)]
 
 mod entrypoint;
+mod instruction;
 pub mod processor;
+mod state;
 
 #[cfg(test)]
 mod tests {

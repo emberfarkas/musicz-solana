@@ -1615,6 +1615,7 @@ dependencies = [
 name = "musicz"
 version = "0.1.0"
 dependencies = [
+ "borsh",
  "solana-program",
  "solana-program-test",
  "solana-sdk",
