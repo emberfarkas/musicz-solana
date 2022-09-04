@@ -1625,6 +1625,7 @@ dependencies = [
  "clap 3.1.18",
  "crossbeam",
  "log",
+ "simplelog",
  "solana-client",
  "solana-sdk",
  "thiserror",
@@ -2585,6 +2586,17 @@ name = "signature"
 version = "1.5.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "f054c6c1a6e95179d6f23ed974060dcefb2d9388bb7256900badad682c499de4"
+
+[[package]]
+name = "simplelog"
+version = "0.12.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "48dfff04aade74dd495b007c831cd6f4e0cee19c344dd9dc0884c0289b70a786"
+dependencies = [
+ "log",
+ "termcolor",
+ "time 0.3.9",
+]
 
 [[package]]
 name = "sized-chunks"

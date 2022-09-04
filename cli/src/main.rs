@@ -1,10 +1,14 @@
 mod error;
 mod funcational;
+mod logger;
 
 use clap::{Arg, Command};
+use log::error;
 
 
 fn main() {
+    simplelog::SimpleLogger::init(log::LevelFilter::Debug, simplelog::Config::default()).unwrap();
+
     let m = Command::new("cli")
         .author("joseph@google.com")
         .about("Explains in brief what the program does")
@@ -20,12 +24,10 @@ fn main() {
     //     println!("command {}", c)
     // }
 
-    let ret = crate::funcational::get_account(); 
-    match ret {
-        Ok(_) => todo!(),
-        Err(e)=> {
-            println!("{}", e)
-        }
+    log::info!("cli begin:");
+
+    if let Err(e) = crate::funcational::get_account() {
+        error!("{}", e);
     }
     
 }

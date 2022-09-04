@@ -12,7 +12,7 @@ pub enum CliError {
     #[error("parse pubkey error")]
     ParsePubkeyError(solana_sdk::pubkey::ParsePubkeyError),
     #[error("client error")]
-    ClientError(solana_client::client_error::ClientError),
+    ClientError(solana_client::client_error::ClientErrorKind),
 }
 
 pub type CliResult<I> = Result<I, CliError>;
@@ -25,7 +25,7 @@ impl From<ParsePubkeyError> for CliError {
 
 impl From<ClientError> for CliError {
     fn from(e: ClientError) -> Self {
-        CliError::ClientError(e)
+        CliError::ClientError(e.kind)
     }
 }
 
