@@ -4,14 +4,13 @@ mod funcational;
 mod logger;
 mod scan;
 
-use clap::{Arg, Command, arg};
+use std::string;
+
+use clap::{arg, command, Arg, Command, Subcommand};
 use log::{error, info};
 
-
-fn main() {
-    simplelog::SimpleLogger::init(log::LevelFilter::Debug, simplelog::Config::default()).unwrap();
-
-    let m = Command::new("cli")
+fn cli() -> Command<'static> {
+    Command::new("cli")
         .author("joseph@google.com")
         .about("Explains in brief what the program does")
         .version("0.0.1")
@@ -19,33 +18,51 @@ fn main() {
             "Longer explanation to appear after the options when \
                  displaying the help information from --help or -h",
         )
-        .arg(Arg::new("verbose").long("verbose").short('v').help("verbose detail output"))
-        // .arg(arg!(-v --verbose <VERBOSE> "verbose detail output"))
-        .subcommand(Command::new("account").about("get account").arg(Arg::new("address").long("address").short('a').help("eth address")))
-        .subcommand(Command::new("db").about("test level db").arg(Arg::new("path").long("path").short('p').help("the path of db")))
+        .arg(arg!(-v --verbose <VERBOSE> "verbose detail output"))
+        .subcommand(
+            Command::new("account")
+                .about("get account")
+                .arg(arg!(-a --address <ADDRESS> "eth address")),
+        )
+        .subcommand(
+            Command::new("db")
+                .about("test level db")
+                .arg(arg!(-p --path <PATH> "the path of db")),
+        )
         .subcommand(Command::new("scan").about("scan db"))
-        .get_matches();
+}
 
-    let debug: bool = m.value_of_t("VEBOSE").unwrap_or_default();
-    if debug {
-        info!("debug mode");
+fn main() {
+    simplelog::SimpleLogger::init(log::LevelFilter::Debug, simplelog::Config::default()).unwrap();
+
+    let m = cli().get_matches();
+
+    if let Some(debug) = m.get_one::<bool>("VERBOSE") {
+        info!("Value for -v: {}", debug);
     }
-    
-    info!("cli begin:");
 
-    if let Some(sub_matches) = m.subcommand_matches("account") {
-        let address : String = sub_matches.value_of_t("address").unwrap();
-        if let Err(e) = crate::funcational::get_account(address) {
-            error!("{}", e);
+    info!("cli begin:");
+    match m.subcommand() {
+        Some(("account", sub_matches)) => {
+            if let Some(c) = sub_matches.get_one::<String>("address") {
+                println!("Value for -address: {}", c);
+            }
+
+            // if let Err(e) = crate::funcational::get_account(address) {
+            //     error!("{}", e);
+            // }
         }
-    } else if let Some(sub_matches) = m.subcommand_matches("db") {
-        let path : String = sub_matches.value_of_t("path").unwrap();
-        if let Err(e) = crate::funcational::load_db(path) {
-            error!("{}", e);
+        Some(("db", sub_matches)) => {
+            let path: String = sub_matches.value_of_t("path").unwrap();
+            if let Err(e) = crate::funcational::load_db(path) {
+                error!("{}", e);
+            }
         }
-    } else if let Some(sub_matches) = m.subcommand_matches("scan") {
-        if let Err(e) = crate::funcational::scan() {
-            error!("{}", e);
+        Some(("scan", sub_matches)) => {
+            if let Err(e) = crate::funcational::scan() {
+                error!("{}", e);
+            }
         }
+        _ => unreachable!(),
     }
 }
