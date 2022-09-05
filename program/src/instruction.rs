@@ -1,10 +1,11 @@
+//! Program instruction
+
 use {
     borsh::{BorshDeserialize, BorshSchema, BorshSerialize},
     solana_program::{
         instruction::{AccountMeta, Instruction},
         program_error::ProgramError,
         pubkey::Pubkey,
-        system_program,
     },
 };
 
@@ -20,7 +21,8 @@ pub enum MusicZInstruction {
         index: u32,
     },
 
-    Almagate{operator1: Pubkey, operator2: Pubkey},
+    /// Almagate 质押
+    Almagate,
 
     /// Update the data in a name record
     ///
@@ -37,7 +39,12 @@ pub enum MusicZInstruction {
     ///   0. `[writeable]` Name record to be updated
     ///   1. `[signer]` Parent name account owner
     ///   2. `[]` Parent name record
-    Update { offset: u32, data: Vec<u8> },
+    Update { 
+        /// 偏移值
+        offset: u32, 
+        /// 数据
+        data: Vec<u8>,
+    },
 
     /// Transfer ownership of a name record
     ///
@@ -57,7 +64,10 @@ pub enum MusicZInstruction {
     ///   1. `[signer]` Account owner
     ///   2. `[signer]` Account class
     ///   3. `[]` Parent name record
-    Transfer { new_owner: Pubkey },
+    Transfer { 
+        /// 所有者
+        new_owner: Pubkey 
+    },
 
     /// Delete a name record.
     ///

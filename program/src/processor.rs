@@ -1,7 +1,6 @@
 //! Program instruction processor
 
 use borsh::BorshDeserialize;
-
 use {
     crate::instruction::MusicZInstruction,
     solana_program::{
@@ -18,28 +17,40 @@ pub struct Processor {}
 
 impl Processor {
     /// set operator
-    pub fn process_set_operator(
-        program_id: &Pubkey,
+    fn process_set_operator(
         accounts: &[AccountInfo],
         token: &Pubkey,
         index: u32,
     ) -> ProgramResult {
+        let account_iter = &mut accounts.iter();
+        let stack_info = next_account_info(account_iter);
         Ok(())
     }
 
-    /// pause token
-    pub fn process_pause(
-        program_id: &Pubkey,
+    /// pause almagate
+    fn process_almagate(accounts: &[AccountInfo]) -> ProgramResult {
+        Ok(())
+    }
+
+    /// update token
+    fn process_update(
         accounts: &[AccountInfo],
-        hashed_name: Vec<u8>,
-        lamports: u64,
-        space: u32,
+        offset: u32,
+        data: Vec<u8>,
+    ) -> ProgramResult {
+        Ok(())
+    }
+
+    /// pause transfer
+    fn process_transfer(
+        accounts: &[AccountInfo],
+        owner: &Pubkey,
     ) -> ProgramResult {
         Ok(())
     }
 
     /// ceate
-    pub fn process_create(accounts: &[AccountInfo]) -> ProgramResult {
+    fn process_create(accounts: &[AccountInfo]) -> ProgramResult {
         // Create in iterator to safety reference accounts in the slice
         let account_info_iter = &mut accounts.iter();
 
@@ -73,12 +84,28 @@ impl Processor {
     pub fn process_instruction(
         _program_id: &Pubkey,
         accounts: &[AccountInfo],
-        _instruction_data: &[u8],
+        instruction_data: &[u8],
     ) -> ProgramResult {
         msg!("Beginning processing");
-        let instruction = MusicZInstruction::try_from_slice(_instruction_data)?;
+        let instruction = MusicZInstruction::try_from_slice(instruction_data)?;
         msg!("Instruction unpacked");
-
-        Ok(())
+        let account_info_iter = &mut accounts.iter();
+        match instruction {
+            MusicZInstruction::SetOperator { operator, index } => {
+                Self::process_set_operator(accounts, &operator, index)
+            }
+            MusicZInstruction::Almagate => {
+                Self::process_almagate(accounts)
+            }         
+            MusicZInstruction::Update { offset, data } => {
+                Self::process_update(accounts, offset, data)
+            }
+            MusicZInstruction::Transfer { new_owner }=> {
+                Self::process_transfer(accounts, &new_owner)
+            }
+            MusicZInstruction::Delete => {
+                Ok(())
+            }
+        }
     }
 }

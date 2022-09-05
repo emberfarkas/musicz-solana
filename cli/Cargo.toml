@@ -13,4 +13,4 @@ crossbeam = "0.8"
 solana-sdk = "1.11.10"
 solana-client = "1.11.10"
 thiserror = "1.0.29"
-
+tokio = "1.21.0"
