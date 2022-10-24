@@ -14,3 +14,10 @@ solana-sdk = "1.11.10"
 solana-client = "1.11.10"
 thiserror = "1.0.29"
 tokio = "1.21.0"
+once_cell = "1.13.0"
+url = "2.2.2"
+aptos-sdk = { path = "../../aptos-core/sdk" }
+aptos-types = { path = "../../aptos-core/types" }
+framework = { path = "../../aptos-core/aptos-move/framework" }
+cached-packages = { path = "../../aptos-core/aptos-move/framework/cached-packages" }
+bcs = { git = "https://github.com/aptos-labs/bcs", rev = "2cde3e8446c460cb17b0c1d6bac7e27e964ac169" }

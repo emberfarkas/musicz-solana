@@ -3,11 +3,13 @@ mod error;
 mod funcational;
 mod logger;
 mod scan;
+mod script_fun_demo;
 
-use std::string;
 
-use clap::{arg, command, Arg, Command, Subcommand};
+use crate::funcational::get_account;
+use clap::{arg, Command};
 use log::{error, info};
+use tokio::sync::mpsc;
 
 fn cli() -> Command<'static> {
     Command::new("cli")
@@ -18,7 +20,7 @@ fn cli() -> Command<'static> {
             "Longer explanation to appear after the options when \
                  displaying the help information from --help or -h",
         )
-        .arg(arg!(-v --verbose <VERBOSE> "verbose detail output"))
+        // .arg(arg!(-v --verbose <VERBOSE> "verbose detail output"))
         .subcommand(
             Command::new("account")
                 .about("get account")
@@ -32,37 +34,31 @@ fn cli() -> Command<'static> {
         .subcommand(Command::new("scan").about("scan db"))
 }
 
-fn main() {
+#[tokio::main]
+async fn main() {
     simplelog::SimpleLogger::init(log::LevelFilter::Debug, simplelog::Config::default()).unwrap();
 
     let m = cli().get_matches();
 
-    if let Some(debug) = m.get_one::<bool>("VERBOSE") {
-        info!("Value for -v: {}", debug);
-    }
-
-    info!("cli begin:");
     match m.subcommand() {
         Some(("account", sub_matches)) => {
-            if let Some(c) = sub_matches.get_one::<String>("address") {
-                println!("Value for -address: {}", c);
+            let address = sub_matches.get_one::<String>("address").unwrap();
+            if let Err(e) = get_account(address).await {
+                error!("{}", e)
             }
-
-            // if let Err(e) = crate::funcational::get_account(address) {
-            //     error!("{}", e);
-            // }
         }
         Some(("db", sub_matches)) => {
             let path: String = sub_matches.value_of_t("path").unwrap();
-            if let Err(e) = crate::funcational::load_db(path) {
+            if let Err(e) = crate::funcational::load_db(path).await {
                 error!("{}", e);
             }
         }
         Some(("scan", sub_matches)) => {
-            if let Err(e) = crate::funcational::scan() {
+            if let Err(e) = crate::funcational::scan().await {
                 error!("{}", e);
             }
         }
         _ => unreachable!(),
     }
+
 }
