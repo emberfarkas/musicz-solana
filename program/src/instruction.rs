@@ -39,9 +39,9 @@ pub enum MusicZInstruction {
     ///   0. `[writeable]` Name record to be updated
     ///   1. `[signer]` Parent name account owner
     ///   2. `[]` Parent name record
-    Update { 
+    Update {
         /// 偏移值
-        offset: u32, 
+        offset: u32,
         /// 数据
         data: Vec<u8>,
     },
@@ -64,9 +64,9 @@ pub enum MusicZInstruction {
     ///   1. `[signer]` Account owner
     ///   2. `[signer]` Account class
     ///   3. `[]` Parent name record
-    Transfer { 
+    Transfer {
         /// 所有者
-        new_owner: Pubkey 
+        new_owner: Pubkey,
     },
 
     /// Delete a name record.

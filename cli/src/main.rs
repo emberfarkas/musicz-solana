@@ -31,6 +31,7 @@ fn cli() -> Command {
                 .arg(arg!(-p --path <PATH> "the path of db")),
         )
         .subcommand(Command::new("scan").about("scan db"))
+        .subcommand(Command::new("eth").about("eth tx"))
 }
 
 #[tokio::main]
@@ -38,7 +39,6 @@ async fn main() {
     simplelog::SimpleLogger::init(log::LevelFilter::Debug, simplelog::Config::default()).unwrap();
 
     let m = cli().get_matches();
-
     match m.subcommand() {
         Some(("account", sub_matches)) => {
             let address = sub_matches.get_one::<String>("address").unwrap();
@@ -54,6 +54,11 @@ async fn main() {
         }
         Some(("scan", sub_matches)) => {
             if let Err(e) = crate::funcational::scan().await {
+                error!("{}", e);
+            }
+        }
+        Some(("eth", sub_matches)) => {
+            if let Err(e) = crate::funcational::eth_tx().await {
                 error!("{}", e);
             }
         }
