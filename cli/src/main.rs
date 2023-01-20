@@ -5,13 +5,12 @@ mod logger;
 mod scan;
 mod script_fun_demo;
 
-
 use crate::funcational::get_account;
 use clap::{arg, Command};
 use log::{error, info};
 use tokio::sync::mpsc;
 
-fn cli() -> Command<'static> {
+fn cli() -> Command {
     Command::new("cli")
         .author("joseph@google.com")
         .about("Explains in brief what the program does")
@@ -48,7 +47,7 @@ async fn main() {
             }
         }
         Some(("db", sub_matches)) => {
-            let path: String = sub_matches.value_of_t("path").unwrap();
+            let path: &String = sub_matches.get_one::<String>("path").unwrap();
             if let Err(e) = crate::funcational::load_db(path).await {
                 error!("{}", e);
             }
@@ -60,5 +59,4 @@ async fn main() {
         }
         _ => unreachable!(),
     }
-
 }

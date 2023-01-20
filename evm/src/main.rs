@@ -1,4 +1,4 @@
-use clap::Parser;
+use clap::{arg, command, Parser};
 use log::{error, info};
 use tokio::sync::mpsc;
 
@@ -18,5 +18,5 @@ struct Args {
 #[tokio::main]
 async fn main() {
     simplelog::SimpleLogger::init(log::LevelFilter::Debug, simplelog::Config::default()).unwrap();
-    println!("Hello, world!");
+    info!("Hello, world!");
 }

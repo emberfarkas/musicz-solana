@@ -1,11 +1,11 @@
 use std::str::FromStr;
 
-use crate::client::{new_solana_client, new_aptos_rest_client};
+use crate::client::{new_aptos_rest_client, new_solana_client};
 use crate::error::CliResult;
 use crate::scan::Scan;
+// use crate::script_fun_demo::demo_p2p_entry_function;
 use log::{error, info};
 use solana_sdk::pubkey::Pubkey;
-use crate::script_fun_demo::demo_p2p_entry_function;
 
 pub(crate) async fn get_account(address: &String) -> CliResult<()> {
     info!("get account for address");
@@ -35,25 +35,25 @@ pub(crate) async fn trnsfer() -> CliResult<()> {
     let client = new_solana_client();
     // client.send_transaction(transaction)?;
 
-    demo_p2p_entry_function();
+    // demo_p2p_entry_function();
     Ok(())
 }
 
-pub(crate) async fn load_db(path: String) -> CliResult<()> {
+pub(crate) async fn load_db(path: &String) -> CliResult<()> {
     Ok(())
 }
 
 pub(crate) async fn scan_solana() -> CliResult<()> {
     let client = new_solana_client();
     let mut block_height = 1;
-    tokio::spawn( async move {
+    tokio::spawn(async move {
         loop {
             match client.get_block(block_height) {
                 Err(e) => info!("{}", e),
                 Ok(block) => info!("{}", block.blockhash),
             }
-            block_height =block_height+1;
-        }    
+            block_height = block_height + 1;
+        }
     });
     Ok(())
 }
@@ -61,23 +61,23 @@ pub(crate) async fn scan_solana() -> CliResult<()> {
 pub(crate) async fn scan_aptos() -> CliResult<()> {
     let client = new_aptos_rest_client();
     let mut block_height = 1;
-    tokio::spawn( async move {
+    tokio::spawn(async move {
         loop {
             match client.get_block_by_height(block_height, true).await {
                 Err(e) => info!("{}", e),
                 Ok(res) => {
                     info!("{}", res.state().chain_id);
-                },
+                }
             }
-            block_height =block_height+1;
-        }    
-    }).await;
+            block_height = block_height + 1;
+        }
+    })
+    .await;
     Ok(())
 }
 
-
 pub(crate) async fn scan() -> CliResult<()> {
-    return  scan_aptos().await;
+    return scan_aptos().await;
 }
 
 pub(crate) async fn get_aptos(address: String) -> CliResult<()> {
