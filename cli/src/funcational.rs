@@ -131,18 +131,13 @@ pub(crate) async fn eth_tx() -> CliResult<()> {
     };
 
     // Sign the tx (can be done offline)
-    let signed = web3
-        .accounts()
-        .sign_transaction(tx_object, &prvk)
-        .await
-        .unwrap();
+    let signed = web3.accounts().sign_transaction(tx_object, &prvk).await?;
 
     // Send the tx to infura
     let result = web3
         .eth()
         .send_raw_transaction(signed.raw_transaction)
-        .await
-        .unwrap();
+        .await?;
 
     println!("Tx succeeded with hash: {}", result);
 

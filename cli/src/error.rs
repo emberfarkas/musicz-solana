@@ -1,30 +1,34 @@
+use secp256k1::Error as Secp256k1Error;
 use solana_client::client_error::ClientError;
-
-use {
-    fixed_hash::rustc_hex::FromHexError, secp256k1::Error as Secp256k1Error,
-    solana_sdk::pubkey::ParsePubkeyError, thiserror::Error, web3::error::Error as Web3Error,
-};
+use thiserror::Error;
+use web3::error::Error as Web3Error;
+use {fixed_hash::rustc_hex::FromHexError, solana_sdk::pubkey::ParsePubkeyError};
 
 #[derive(Debug, Error)]
 pub enum CliError {
     #[error("Out of space")]
     OutOfSpace,
-    #[error("parse pubkey error")]
-    ParsePubkeyError(solana_sdk::pubkey::ParsePubkeyError, String),
+    #[error("String is the wrong size")]
+    ParsePubkeyWrongSize,
+    #[error("Invalid Base58 string")]
+    ParsePubkeyInvalid,
     #[error("sol client error {kind:?}, msg: {msg:?}")]
     SolClientError {
         kind: solana_client::client_error::ClientErrorKind,
         msg: String,
     },
-    #[error("parse pubkey error")]
-    Web3Error,
+    #[error("web3 client error msg: {msg:?}")]
+    Web3Error { msg: String },
 }
 
 pub type CliResult<I> = Result<I, CliError>;
 
 impl From<ParsePubkeyError> for CliError {
     fn from(e: ParsePubkeyError) -> Self {
-        CliError::ParsePubkeyError(e, "".to_owned())
+        match e {
+            ParsePubkeyError::WrongSize => CliError::ParsePubkeyWrongSize,
+            ParsePubkeyError::Invalid => CliError::ParsePubkeyInvalid,
+        }
     }
 }
 
@@ -39,18 +43,18 @@ impl From<ClientError> for CliError {
 
 impl From<Web3Error> for CliError {
     fn from(e: Web3Error) -> Self {
-        CliError::Web3Error
+        CliError::Web3Error { msg: e.to_string() }
     }
 }
 
 impl From<Secp256k1Error> for CliError {
     fn from(e: Secp256k1Error) -> Self {
-        CliError::Web3Error
+        CliError::Web3Error { msg: e.to_string() }
     }
 }
 
 impl From<FromHexError> for CliError {
     fn from(e: FromHexError) -> Self {
-        CliError::Web3Error
+        CliError::Web3Error { msg: e.to_string() }
     }
 }
