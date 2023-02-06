@@ -1,10 +1,11 @@
+use std::ops::Add;
 use std::str::FromStr;
 
+use crate::apt::scan_aptos;
 use crate::error::CliResult;
 // use crate::script_fun_demo::demo_p2p_entry_function;
-use log::{error, info};
+use log::info;
 use secp256k1::{PublicKey, Secp256k1, SecretKey};
-use solana_sdk::pubkey::Pubkey;
 use web3::ethabi::Address;
 use web3::types::{TransactionParameters, TransactionRequest, U256};
 use web3::{
@@ -36,7 +37,9 @@ pub(crate) async fn eth_tx() -> CliResult<()> {
         SecretKey::from_str("95884f665f4cf15b77a75017b64f9ff7df93b565fb9f3415b4cb352bd627141e")?;
 
     let secp = Secp256k1::new();
-    let pubk = PublicKey::from(&secp, &prvk);
+    let pubk = PublicKey::from_secret_key(&secp, &prvk);
+
+    info!("address: {}", pubk.to_string());
 
     // Build the tx object
     let tx_object = TransactionParameters {
