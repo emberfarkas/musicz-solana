@@ -1,13 +1,14 @@
-mod client;
+mod apt;
 mod error;
 mod funcational;
 mod logger;
 mod scan;
 mod script_fun_demo;
+mod sol;
 
-use crate::funcational::get_account;
 use clap::{arg, Command};
 use log::{error, info};
+use sol::get_account;
 use tokio::sync::mpsc;
 
 fn cli() -> Command {
