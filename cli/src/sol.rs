@@ -53,9 +53,11 @@ pub(crate) async fn scan_solana() -> CliResult<()> {
         loop {
             match client.get_block(block_height) {
                 Err(e) => info!("{}", e),
-                Ok(block) => info!("{}", block.blockhash),
+                Ok(block) => {
+                    block_height = block.block_height.unwrap() + 1;
+                    info!("{}", block.blockhash)
+                }
             }
-            block_height = block_height + 1;
         }
     });
     Ok(())
