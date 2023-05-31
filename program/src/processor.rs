@@ -17,11 +17,7 @@ pub struct Processor {}
 
 impl Processor {
     /// set operator
-    fn process_set_operator(
-        accounts: &[AccountInfo],
-        token: &Pubkey,
-        index: u32,
-    ) -> ProgramResult {
+    fn process_set_operator(accounts: &[AccountInfo], token: &Pubkey, index: u32) -> ProgramResult {
         let account_iter = &mut accounts.iter();
         let stack_info = next_account_info(account_iter);
         Ok(())
@@ -33,19 +29,12 @@ impl Processor {
     }
 
     /// update token
-    fn process_update(
-        accounts: &[AccountInfo],
-        offset: u32,
-        data: Vec<u8>,
-    ) -> ProgramResult {
+    fn process_update(accounts: &[AccountInfo], offset: u32, data: Vec<u8>) -> ProgramResult {
         Ok(())
     }
 
     /// pause transfer
-    fn process_transfer(
-        accounts: &[AccountInfo],
-        owner: &Pubkey,
-    ) -> ProgramResult {
+    fn process_transfer(accounts: &[AccountInfo], owner: &Pubkey) -> ProgramResult {
         Ok(())
     }
 
@@ -94,18 +83,14 @@ impl Processor {
             MusicZInstruction::SetOperator { operator, index } => {
                 Self::process_set_operator(accounts, &operator, index)
             }
-            MusicZInstruction::Almagate => {
-                Self::process_almagate(accounts)
-            }         
+            MusicZInstruction::Almagate => Self::process_almagate(accounts),
             MusicZInstruction::Update { offset, data } => {
                 Self::process_update(accounts, offset, data)
             }
-            MusicZInstruction::Transfer { new_owner }=> {
+            MusicZInstruction::Transfer { new_owner } => {
                 Self::process_transfer(accounts, &new_owner)
             }
-            MusicZInstruction::Delete => {
-                Ok(())
-            }
+            MusicZInstruction::Delete => Ok(()),
         }
     }
 }

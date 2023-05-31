@@ -59,6 +59,7 @@ pub(crate) async fn scan_solana() -> CliResult<()> {
                 }
             }
         }
-    });
+    })
+    .await;
     Ok(())
 }
