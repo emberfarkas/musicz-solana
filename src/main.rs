@@ -1,4 +1,3 @@
-mod apt;
 mod error;
 mod funcational;
 mod logger;

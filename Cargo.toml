@@ -10,8 +10,8 @@ members = ["program"]
 [workspace.dependencies]
 serde = "1.0.163"
 serde_json = "1.0.96"
-solana-sdk = "1.14.18"
-solana-client = "1.14.18"
+solana-sdk = "1.17.1"
+solana-client = "1.17.1"
 tokio = "1.21.2"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
@@ -30,6 +30,3 @@ url = "2.2.2"
 web3 = "0.18.0"
 secp256k1 = "0.27.0"
 fixed-hash = "0.8.0"
-aptos-sdk = { path = "../aptos-core/sdk" }
-aptos-types = { path = "../aptos-core/types" }
-aptos-framework = { path = "../aptos-core/aptos-move/framework" }

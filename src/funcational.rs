@@ -1,7 +1,6 @@
 use std::ops::Add;
 use std::str::FromStr;
 
-use crate::apt::scan_aptos;
 use crate::error::CliResult;
 use crate::sol::scan_solana;
 // use crate::script_fun_demo::demo_p2p_entry_function;
